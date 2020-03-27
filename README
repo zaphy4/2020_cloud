@@ -1,0 +1,21 @@
+1. namelist
+2. stretching (constant grid x)
+3. staggered
+4. finite volume method
+
+-- work to do -----
+1. main code
+
+
+2. sounding 
+
+
+3. advection
+
+
+4. namelist
+
+
+
+How to execute?
+gfortran driver.f90 file_io.f90 temp_ideal.f90  -o a.out
