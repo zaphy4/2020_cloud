@@ -2,11 +2,11 @@
 
 cat > namelist << EOF
 &variable
-    nt   = 100,
-    nz   = 20, 
-    ps   = 1000.,
-    ptop = 10.,
-    stat = 'ideal'          ! -- 'ideal' or 'real' case
+ nt   = 100,
+ nz   = 20, 
+ ps   = 1000.,
+ ptop = 10.,
+ stat = 'ideal'          ! -- 'ideal' or 'real' case
 /
 EOF
 
