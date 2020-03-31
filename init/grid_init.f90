@@ -11,38 +11,39 @@ contains
 
 ! #########################################################
 
-subroutine grid_const (ps,ptop,nz,plev,zlev,splev,szlev)
+subroutine grid_const (zsfc,ztop,nz,zlev,szlev)
   implicit none
   integer, intent(in)             :: nz
-  real, intent(in)                :: ps,ptop
-  real, dimension(nz), intent(inout)   ::  plev,  zlev
-  real, dimension(nz+1), intent(inout) :: splev, szlev
+  real, intent(in)                :: zsfc,ztop
+  real, dimension(nz), intent(inout)   :: zlev
+  real, dimension(nz+1), intent(inout) :: szlev
 
   ! private variable
   integer :: i
   real    :: dz
 
-  dz = (ptop-ps)/nz
+  dz = (ztop-zsfc)/nz
 
-  splev(1) = ps
+  szlev(1) = zsfc
   do i = 1, nz
-    splev(i+1) = dz + splev(i) 
+    szlev(i+1) = dz + szlev(i) 
+    zlev(i)    = (szlev(i)+szlev(i+1))/2.
   end do    
-  !szlev = 
 
-  !print*, ps, splev(1), splev(nz+1)
-  !print*, splev
+  !print*, szlev  !-- check
+  !print*, zlev
+
 
 end subroutine grid_const
 
 ! #########################################################
 
-subroutine grid_stret (ps,ptop,nz,plev,zlev,splev,szlev)
+subroutine grid_stret (zsfc,ztop,nz,zlev,szlev)
   implicit none
   integer, intent(in)                :: nz
-  real, intent(in)                   :: ps,ptop
-  real, dimension(nz), intent(inout)   :: plev,zlev
-  real, dimension(nz+1), intent(inout) :: splev, szlev
+  real, intent(in)                   :: zsfc,ztop
+  real, dimension(nz), intent(inout)   :: zlev
+  real, dimension(nz+1), intent(inout) :: szlev
 
 end subroutine grid_stret
 

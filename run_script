@@ -2,21 +2,21 @@
 set compiler = "ifort"   
 set init_dir = "./init/"
 set util_dir = "./util/"
-set mod_dir  = "./mod/"   # where to pu .mod .o
+set mod_dir  = "./mod/"   # where to link
 
+set dir = `pwd`
 
-# ------- COMPILE ---------
-# -c: module complie, -module: where to put compiled modules
-#                          -o: where to put object file
-$compiler -c ${util_dir}file_io.f90 -o ${mod_dir}file_io.o -module ${mod_dir}
-$compiler -c ${init_dir}grid_init.f90 -o ${mod_dir}grid_init.o -module ${mod_dir}
-$compiler -c ${init_dir}var_init.f90 -o ${mod_dir}var_init.o -module ${mod_dir}
+ln -sf ${dir}/namelist ${mod_dir}
+ln -sf $dir/init/grid_init.f90 ${mod_dir}
+ln -sf $dir/init/var_init.f90 ${mod_dir}
+ln -sf $dir/util/file_io.f90 ${mod_dir}
+ln -sf $dir/driver.f90 ${mod_dir}
 
+cd ${mod_dir}
 
-# ------- EXECUTE ---------
-# -I: module file directory
-$compiler driver.f90 -I${mod_dir} ${mod_dir}*.o
-./a.out
+$compiler ./file_io.f90 ./grid_init.f90 ./var_init.f90 ./driver.f90 -L${NETCDF}/lib -I${NETCDF}/include -lnetcdff -lnetcdf -lcurl
+#$compiler ./file_io.f90 ./grid_init.f90 ./var_init.f90 ./driver.f90 -L${NETCDF}/lib -I${NETCDF}/include -lnetcdff -lnetcdf -lcurl
+a.out
 
 exit
 
@@ -29,12 +29,20 @@ exit
 
 
 
+# ------- COMPILE ---------
+# -c: module complie, -module: where to put compiled modules
+#                          -o: where to put object file
+$compiler -c ${util_dir}file_io.f90 -o ${mod_dir}file_io.o -module ${mod_dir} 
+$compiler -c ${init_dir}grid_init.f90 -o ${mod_dir}grid_init.o -module ${mod_dir} 
+$compiler -c -I/${NETCDF}/include ${init_dir}var_init.f90 -o ${mod_dir}var_init.o -module ${mod_dir}
 
 
+# ------- EXECUTE ---------
+# -I: module file directory
+$compiler driver.f90 -module ${mod_dir} ${mod_dir}*.o -L${NETCDF}/lib -I${NETCDF}/include -lnetcdf -lcurl
+./a.out
 
-
-
-
+exit
 
 
 # Don't know how to use gfortran module .. 

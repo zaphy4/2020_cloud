@@ -1,9 +1,8 @@
 &variable
     nt   = 100,
     nz   = 20, 
-    ps   = 1000.,
-    ptop = 10.,
-
+    zsfc = 1000.,           ! -- staggered grid surface (m)
+    ztop = 10000.,          ! -- staggered grid top
     grid = 'const',         ! -- 'const' or 'stret' (stretching)
-    stat = 'ideal'          ! -- 'ideal' or 'real' case
+    stat = 'real'          ! -- 'ideal' or 'real' case
 /
