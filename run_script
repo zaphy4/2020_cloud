@@ -1,0 +1,59 @@
+#!/bin/csh -f
+set compiler = "ifort"   
+set init_dir = "./init/"
+set util_dir = "./util/"
+set mod_dir  = "./mod/"   # where to pu .mod .o
+
+
+# ------- COMPILE ---------
+# -c: module complie, -module: where to put compiled modules
+#                          -o: where to put object file
+$compiler -c ${util_dir}file_io.f90 -o ${mod_dir}file_io.o -module ${mod_dir}
+$compiler -c ${init_dir}grid_init.f90 -o ${mod_dir}grid_init.o -module ${mod_dir}
+$compiler -c ${init_dir}var_init.f90 -o ${mod_dir}var_init.o -module ${mod_dir}
+
+
+# ------- EXECUTE ---------
+# -I: module file directory
+$compiler driver.f90 -I${mod_dir} ${mod_dir}*.o
+./a.out
+
+exit
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# Don't know how to use gfortran module .. 
+#
+#
+# ------- COMPILE ---------
+# -I, -J: where to use compiled object, modules
+#     -o: where to put compiled object
+$compiler -J${mod_dir}  -c ${util_dir}file_io.f90 -o ${mod_dir}file_io.o -I/usr/local/include -L/usr/local/lib
+$compiler -J${mod_dir} -c ${init_dir}grid_init.f90 -o ${mod_dir}file_io.o -I/usr/local/include -L/usr/local/lib
+$compiler -J${mod_dir} -c ${init_dir}var_init.f90 -o ${mod_dir}file_io.o -I/usr/local/include -L/usr/local/lib
+
+
+# ------- EXECUTE ---------
+#$compiler driver.f90 
+#$compiler -I${mod_dir} -J${mod_dir} driver.f90 ${mod_dir}*.o -o a.out
+
+#./a.out
+#rm -f a.out
+
+
+

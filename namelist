@@ -3,5 +3,7 @@
     nz   = 20, 
     ps   = 1000.,
     ptop = 10.,
+
+    grid = 'const',         ! -- 'const' or 'stret' (stretching)
     stat = 'ideal'          ! -- 'ideal' or 'real' case
 /
