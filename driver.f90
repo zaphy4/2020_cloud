@@ -14,6 +14,7 @@
 program driver
 
   use netcdf
+  use       adv, only: adv_1d
   use   file_io, only: file_exist
   use  var_init, only: temp_init, w_init, temp_ideal, w_ideal 
   use grid_init, only: grid_const, grid_stret
@@ -21,7 +22,8 @@ program driver
   implicit none
   ! [namelist input]
   integer          :: nz,   & ! The number of levels  
-                      nt      ! The number of time
+                      nt,   & ! The number of time
+                      dt      ! time interval
 
   real             :: zsfc,   & ! Surface pressure 
                       ztop      ! model top
@@ -29,7 +31,7 @@ program driver
 
   character(len=24) :: stat    ! al or real case
   character(len=24) :: grid    ! const or stret
-  namelist /variable/nz, nt, zsfc, ztop, stat, grid
+  namelist /variable/nz, nt, zsfc, ztop, stat, grid, dt
 
 
 
@@ -72,10 +74,9 @@ program driver
 
   ! read NetCDF file and convert from p->z and interpolation (temp, qv)
   if (stat=='ideal') then
-    print*, 'variable: ideal case (NOT YET)'
-    call exit                     !-- exit program
-    call temp_ideal(nz,zlev,temp) !-- not staggered
-    call    w_ideal(nz,szlev,w)   !-- staggered grid
+    print*, 'variable: ideal case !!!!!'
+    call temp_ideal(nz,zlev,temp,q)
+    call    w_init(nz,szlev,w)
   else if (stat=='real') then
     print*, 'variable: real case'
     call temp_init(nz,zlev,temp,q)
@@ -85,7 +86,12 @@ program driver
 
 
   ! [time integral]
-  do it = 1, nt
+write(*,'(a,i4,a,20f10.4,a,1f10.4)') "temp ",1, ":", q*1000, "  sum:", sum(q*1000)
+  do it = 2, nt
+    !call adv_1d(temp, zlev, szlev, w, nz,dt)
+   !write(*,'(a,i4,a,20f10.4,a,1f10.4)') "temp ",it, ":", temp, "  sum:", sum(temp)
+    call adv_1d(  q, zlev, szlev, w, nz,dt)     
+   write(*,'(a,i4,a,20f10.4,a,1f10.4)') "temp ",it, ":", q*1000, "  sum:", sum(q*1000)
   end do
   
 

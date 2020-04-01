@@ -1,8 +1,10 @@
 &variable
-    nt   = 100,
+    nt   = 100,             !-- itineration
+    dt   = 10,              !-- second 
     nz   = 20, 
     zsfc = 1000.,           ! -- staggered grid surface (m)
     ztop = 10000.,          ! -- staggered grid top
     grid = 'const',         ! -- 'const' or 'stret' (stretching)
-    stat = 'real'          ! -- 'ideal' or 'real' case
+    stat = 'ideal'          ! -- 'ideal' or 'real' case
+    !stat = 'real'          ! -- 'ideal' or 'real' case
 /

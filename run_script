@@ -7,6 +7,7 @@ set mod_dir  = "./mod/"   # where to link
 set dir = `pwd`
 
 ln -sf ${dir}/namelist ${mod_dir}
+ln -sf ${dir}/src/fv/1d_adv.f90 ${mod_dir}
 ln -sf $dir/init/grid_init.f90 ${mod_dir}
 ln -sf $dir/init/var_init.f90 ${mod_dir}
 ln -sf $dir/util/file_io.f90 ${mod_dir}
@@ -14,7 +15,7 @@ ln -sf $dir/driver.f90 ${mod_dir}
 
 cd ${mod_dir}
 
-$compiler ./file_io.f90 ./grid_init.f90 ./var_init.f90 ./driver.f90 -L${NETCDF}/lib -I${NETCDF}/include -lnetcdff -lnetcdf -lcurl
+$compiler ./file_io.f90 ./grid_init.f90 ./var_init.f90 ./1d_adv.f90 ./driver.f90 -L${NETCDF}/lib -I${NETCDF}/include -lnetcdff -lnetcdf -lcurl
 #$compiler ./file_io.f90 ./grid_init.f90 ./var_init.f90 ./driver.f90 -L${NETCDF}/lib -I${NETCDF}/include -lnetcdff -lnetcdf -lcurl
 a.out
 

@@ -1,1 +1,1 @@
-/home/RHS/Dropbox/Class/2020_cloud/code_structure/init/var_init.f90
+/home/RHS/Dropbox/Class/2020_cloud/mygit/2020_cloud/init/var_init.f90

@@ -79,10 +79,17 @@ end subroutine
 
 ! #########################################################
 
-subroutine temp_ideal (nz,zlev,temp)
+subroutine temp_ideal (nz,zlev,temp,q)
   implicit none
   integer, intent(in)                :: nz
-  real, dimension(nz), intent(inout) :: temp, zlev
+  real, dimension(nz), intent(inout) :: q,temp, zlev
+
+  temp = 0
+  temp(5) = 10
+
+  q    = 0
+  q(5) = 0.01
+
 end subroutine
 
 ! #########################################################
@@ -98,7 +105,7 @@ subroutine w_init (nz, szlev, w)
   end do
 
   ! method 1: constant
-  !w = 1 !-- m/s
+  w = 1 !-- m/s
 
   ! method 2: sin(-90) ~ sin(90)
   !w = (w-(nz+1)/2.)/real(nz+1) *3.14
@@ -106,9 +113,9 @@ subroutine w_init (nz, szlev, w)
   !print*, w
 
   ! method 3: sin^2
-  w = w/real(nz+1) * 3.14 * 2 
-  w = sin(w)**2
-  print*, w
+  !w = w/real(nz+1) * 3.14 * 2 
+  !w = sin(w)**2
+  !print*, w
 
 
 end subroutine
