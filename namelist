@@ -4,7 +4,11 @@
     nz   = 20, 
     zsfc = 1000.,           ! -- staggered grid surface (m)
     ztop = 10000.,          ! -- staggered grid top
-    grid = 'const',         ! -- 'const' or 'stret' (stretching)
-    stat = 'ideal'          ! -- 'ideal' or 'real' case
+    grid = 'stret',         ! -- 'const' or 'stret' (stretching)
+    stat = 'ideal',         ! -- 'ideal' or 'real' case
     !stat = 'real'          ! -- 'ideal' or 'real' case
+    wflag = 4               ! 1. constant: w=1
+                            ! 2. sin(-90) - sin(90)
+                            ! 3. sin(0)^2 - sin(360)^2
+                            ! 4. sfc and mid-level has strong wind
 /

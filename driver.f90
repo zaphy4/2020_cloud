@@ -16,22 +16,27 @@ program driver
   use netcdf
   use       adv, only: adv_1d
   use   file_io, only: file_exist
-  use  var_init, only: temp_init, w_init, temp_ideal, w_ideal 
+  use  var_init, only: temp_init, w_init, temp_ideal
   use grid_init, only: grid_const, grid_stret
 
   implicit none
   ! [namelist input]
-  integer          :: nz,   & ! The number of levels  
-                      nt,   & ! The number of time
-                      dt      ! time interval
+  integer            :: nz,   & ! The number of levels  
+                        nt,   & ! The number of time
+                        dt      ! time interval
 
-  real             :: zsfc,   & ! Surface pressure 
-                      ztop      ! model top
+  integer            :: wflag   ! 1. constant (1m/s) 
+                                ! 2. sin(-90) - sin(90)
+                                ! 3. sin(0)^2 - sin(360)^2
+                                ! 4. sfc and mid-level has strong wind
+
+  real               :: zsfc,   & ! Surface pressure 
+                        ztop      ! model top
 
 
   character(len=24) :: stat    ! al or real case
   character(len=24) :: grid    ! const or stret
-  namelist /variable/nz, nt, zsfc, ztop, stat, grid, dt
+  namelist /variable/nz, nt, zsfc, ztop, stat, grid, dt, wflag
 
 
 
@@ -68,7 +73,7 @@ program driver
     print*, 'grid: constant'
     call grid_const(zsfc, ztop, nz, zlev, szlev)
   else if (grid=='stret') then
-    print*, 'grid: stretching (NOT YET)'
+    print*, 'grid: stretching '
     call grid_stret(zsfc, ztop, nz, zlev, szlev)
   end if
 
@@ -76,11 +81,11 @@ program driver
   if (stat=='ideal') then
     print*, 'variable: ideal case !!!!!'
     call temp_ideal(nz,zlev,temp,q)
-    call    w_init(nz,szlev,w)
+    call    w_init(nz,szlev,w, wflag)
   else if (stat=='real') then
     print*, 'variable: real case'
     call temp_init(nz,zlev,temp,q)
-    call    w_init(nz,szlev,w)
+    call    w_init(nz,szlev,w, wflag)
   end if
 
 

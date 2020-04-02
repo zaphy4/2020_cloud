@@ -94,9 +94,9 @@ end subroutine
 
 ! #########################################################
 
-subroutine w_init (nz, szlev, w)
+subroutine w_init (nz, szlev, w, wflag)
   implicit none
-  integer, intent(in)                  :: nz
+  integer, intent(in)                  :: nz, wflag
   real, dimension(nz+1), intent(inout) :: w, szlev
   integer                              :: i
 
@@ -105,32 +105,29 @@ subroutine w_init (nz, szlev, w)
   end do
 
   ! method 1: constant
+  if (wflag.eq.1) then
   w = 1 !-- m/s
+  end if
 
   ! method 2: sin(-90) ~ sin(90)
-  !w = (w-(nz+1)/2.)/real(nz+1) *3.14
-  !w = sin(w)
-  !print*, w
+  if (wflag.eq.2) then
+  w = (w-(nz+1)/2.)/real(nz+1) *3.14
+  w = sin(w)
+  end if
 
   ! method 3: sin^2
-  !w = w/real(nz+1) * 3.14 * 2 
-  !w = sin(w)**2
-  !print*, w
+  if (wflag.eq.3) then
+  w = w/real(nz+1) * 3.14 * 2 
+  w = sin(w)**2
+  end if
 
-
-end subroutine
-
-! #########################################################
-
-subroutine w_ideal (nz,szlev, w)
-  implicit none
-  integer, intent(in)                  :: nz
-  real, dimension(nz+1), intent(inout) :: w, szlev
-
-
-
+  ! method 4: surface and cloud have strong w-wind
+  if (wflag.eq.4) then
+  w = exp(-1*(w-0)**2/(nz*5)) + exp(-1*(w-(nz/2))**2/(nz*10)) 
+  end if
 
 end subroutine
+
 
 ! #########################################################
 
