@@ -180,6 +180,103 @@ end subroutine
 
 ! #########################################################
 
+SUBROUTINE initial_sounding(nz, zlev, z, t, th, qv, p)
+
+  IMPLICIT NONE
+
+  INTEGER             :: nz
+  REAL, DIMENSION(nz) :: zlev
+  REAL, DIMENSION(nz) :: z, t, th, qv, p
+
+  REAL,    PARAMETER :: kappa  = 0.288      !! check
+  REAL,    PARAMETER :: p1000  = 1008.7
+  REAL,    PARAMETER :: grav   = 9.81
+  REAL,    PARAMETER :: rd     = 287.
+  INTEGER, PARAMETER :: max_nl = 10000
+
+  REAL :: pp, zz, tt, tdd, kt, pa
+  REAL :: zl1, wgt, pp1
+
+  INTEGER :: readstus, lnum, k, kk, ik
+
+  REAL, DIMENSION(max_nl) :: z_in, t_in, th_in, qv_in, p_in
+
+  CHARACTER(LEN=150) :: filename
+
+  filename = '../data/OBS_SONDE.csv'
+
+  OPEN(10, FILE=TRIM(filename))
+
+  lnum = 0
+  DO WHILE(.TRUE.)
+     READ(10,*,IOSTAT=readstus)
+     IF (readstus /= 0) EXIT
+     lnum = lnum + 1
+  ENDDO
+!print*, lnum
+
+  REWIND(10)
+
+  DO k = lnum, 1, -1
+!print *, k
+
+     READ(10,*) pp, zz, tt, tdd
+
+     kt = tt + 273.15
+     pa = pp*100 ! hPa -> Pa
+
+     p_in(k) = pa ! Pa
+     p_in(k) = pp**(1./kappa)
+     t_in(k) = kt ! K
+
+     IF (int(zz) == 0) THEN
+        z_in(k) = 44330.*(1.-(pp/p1000)**(1./5.255))
+     ELSE
+        z_in(k) = zz ! gpm
+     ENDIF
+
+     th_in(k) = (kt)*(p1000/pp)**kappa
+
+     pp1 = exp(20.386 - (5133./kt))
+     qv_in(k) = 0.622*(pp1/(pp-(0.378*pp1)))  ! kg/kg
+     qv_in(k) = 0.622*(pp1/pp)
+
+  ENDDO
+
+  DO k = 1, nz
+
+     zl1 = zlev(k)
+
+     DO kk = 1, lnum
+        IF (zl1 >= z_in(kk)) ik = kk
+     ENDDO
+
+     IF (ik == lnum) THEN
+        th(k) = th_in(ik)
+        qv(k) = qv_in(ik)
+     ELSE
+        wgt = (zl1 - z_in(ik)) / (z_in(ik+1) - z_in(ik))
+        th(k) = (1.-wgt)*th_in(ik) + wgt*th_in(ik+1)
+        qv(k) = (1.-wgt)*qv_in(ik) + wgt*qv_in(ik+1)
+     ENDIF
+
+     p(k) = p_in(ik)**kappa                 &
+           - kappa * p1000**kappa * grav    &
+           / rd / ((th(k) + th_in(ik))/2.0) &
+           * (zl1 - z_in(ik))
+
+     p(k) = p(k)**(1./kappa)
+
+  ENDDO
+
+  t = th*(p/p1000)**kappa
+
+  CLOSE(10)
+
+END SUBROUTINE initial_sounding
+
+! #########################################################
+
   subroutine check(status)
     implicit none
     integer, intent ( in) :: status
