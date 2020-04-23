@@ -220,13 +220,12 @@ SUBROUTINE initial_sounding(nz, zlev, z, t, th, qv, p)
   DO k = lnum, 1, -1
 !print *, k
 
-     READ(10,*) pp, zz, tt, tdd
+     READ(10,*) pp, zz, tt
 
      kt = tt + 273.15
      pa = pp*100 ! hPa -> Pa
 
      p_in(k) = pa ! Pa
-     p_in(k) = pp**(1./kappa)
      t_in(k) = kt ! K
 
      IF (int(zz) == 0) THEN
@@ -237,9 +236,10 @@ SUBROUTINE initial_sounding(nz, zlev, z, t, th, qv, p)
 
      th_in(k) = (kt)*(p1000/pp)**kappa
 
-     pp1 = exp(20.386 - (5133./kt))
-     qv_in(k) = 0.622*(pp1/(pp-(0.378*pp1)))  ! kg/kg
-     qv_in(k) = 0.622*(pp1/pp)
+     pp1 = exp(20.386 - (5133./kt)) ! mmhg
+     pp1 = pp1 * 1.333              ! mmhg -> hPa
+     qv_in(k) = 622*(pp1/(pp-(0.378*pp1)))  ! g/kg
+     qv_in(k) = qv_in(k)/1000.              ! g/kg -> kg/kg
 
   ENDDO
 
